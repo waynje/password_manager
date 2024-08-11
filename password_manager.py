@@ -8,12 +8,6 @@ import getpass
 
 
 def generate_key(master_password):
-    """
-    Генерирует ключ на основе мастер-пароля.
-
-    :param master_password: Мастер-пароль, используемый для генерации ключа.
-    :return: Сгенерированный ключ и соль.
-    """
     salt = os.urandom(16)  # Создаем случайную соль
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
@@ -27,20 +21,14 @@ def generate_key(master_password):
 
 
 def load_key(master_password):
-    """
-    Загружает и восстанавливает ключ на основе мастер-пароля и сохраненной соли.
-
-    :param master_password: Мастер-пароль, используемый для восстановления ключа.
-    :return: Восстановленный ключ.
-    """
     try:
         with open("key.key", "rb") as key_file:
-            salt = key_file.read(16)  # Первые 16 байтов — это соль
-            stored_key = key_file.read()  # Считываем оставшийся ключ
+            salt = key_file.read(16)
+            stored_key = key_file.read()
         kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(),  # Алгоритм хеширования
+            algorithm=hashes.SHA256(),
             length=32,
-            salt=salt,  # Передаем соль
+            salt=salt,
             iterations=100000,
             backend=default_backend()
         )
